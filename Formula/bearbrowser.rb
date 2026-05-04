@@ -14,6 +14,7 @@ class Bearbrowser < Formula
 
     (bin/"bearbrowser").write wrapper_for("apply-sourceos-overlays.sh")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
+    (bin/"bearbrowser-install-app-launcher").write wrapper_for("install-macos-app-launcher.sh")
     (bin/"bearbrowser-verify-build-lane").write wrapper_for("verify-build-lane.sh")
     (bin/"bearbrowser-check-build-env").write wrapper_for("check-build-environment.sh")
     (bin/"bearbrowser-discover-build-system").write wrapper_for("discover-upstream-build-system.sh")
@@ -43,6 +44,7 @@ class Bearbrowser < Formula
   def caveats
     <<~EOS
       BearBrowser Formula installs the overlay/runtime tooling.
+      Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
       Run bearbrowser-doctor for status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
   end
