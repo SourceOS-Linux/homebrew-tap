@@ -14,6 +14,8 @@ class Bearbrowser < Formula
 
     (bin/"bearbrowser").write wrapper_for("apply-sourceos-overlays.sh")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
+    (bin/"bearbrowser-check-build-env").write wrapper_for("check-build-environment.sh")
+    (bin/"bearbrowser-discover-build-system").write wrapper_for("discover-upstream-build-system.sh")
     (bin/"bearbrowser-verify-upstream").write wrapper_for("verify-upstream-parity.sh")
     (bin/"bearbrowser-doctor").write wrapper_for("bearbrowser-doctor.sh")
     (bin/"bearbrowser-credential-doctor").write wrapper_for("bearbrowser-credential-doctor.sh")
@@ -44,6 +46,8 @@ class Bearbrowser < Formula
       Useful commands:
         bearbrowser --profile agent-runtime --ref latest --dry-run
         bearbrowser-build-binary --profile agent-runtime --dry-run
+        bearbrowser-check-build-env
+        bearbrowser-discover-build-system <workspace-source-dir>
         bearbrowser-verify-upstream
         bearbrowser-doctor
         bearbrowser-credential-doctor
