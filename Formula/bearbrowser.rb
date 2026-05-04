@@ -16,6 +16,7 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
     (bin/"bearbrowser-verify-upstream").write wrapper_for("verify-upstream-parity.sh")
     (bin/"bearbrowser-doctor").write wrapper_for("bearbrowser-doctor.sh")
+    (bin/"bearbrowser-credential-doctor").write wrapper_for("bearbrowser-credential-doctor.sh")
     (bin/"bearbrowser-update").write wrapper_for("bearbrowser-update.sh")
     (bin/"bearbrowser-automation-surfaces").write wrapper_for("bearbrowser-automation-surfaces.sh")
     (bin/"bearbrowser-install-runtime-deps").write wrapper_for("bearbrowser-install-runtime-deps.sh")
@@ -42,6 +43,7 @@ class Bearbrowser < Formula
         bearbrowser-build-binary --profile agent-runtime --dry-run
         bearbrowser-verify-upstream
         bearbrowser-doctor
+        bearbrowser-credential-doctor
         bearbrowser-update
         bearbrowser-automation-surfaces
         bearbrowser-install-runtime-deps
@@ -60,6 +62,7 @@ class Bearbrowser < Formula
     assert_match "BearBrowser full binary build lane", shell_output("#{bin}/bearbrowser-build-binary --profile agent-runtime --dry-run")
     assert_match "hidden_refs=", shell_output("#{bin}/bearbrowser-verify-upstream")
     assert_match "BearBrowser doctor", shell_output("#{bin}/bearbrowser-doctor")
+    assert_match "BearBrowser credential doctor", shell_output("#{bin}/bearbrowser-credential-doctor")
     assert_match "browser.playwright", shell_output("#{bin}/bearbrowser-automation-surfaces")
   end
 end
