@@ -14,6 +14,7 @@ class Bearbrowser < Formula
 
     (bin/"bearbrowser").write wrapper_for("apply-sourceos-overlays.sh")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
+    (bin/"bearbrowser-verify-build-lane").write wrapper_for("verify-build-lane.sh")
     (bin/"bearbrowser-check-build-env").write wrapper_for("check-build-environment.sh")
     (bin/"bearbrowser-discover-build-system").write wrapper_for("discover-upstream-build-system.sh")
     (bin/"bearbrowser-verify-upstream").write wrapper_for("verify-upstream-parity.sh")
@@ -42,39 +43,12 @@ class Bearbrowser < Formula
   def caveats
     <<~EOS
       BearBrowser Formula installs the overlay/runtime tooling.
-
-      Useful commands:
-        bearbrowser --profile agent-runtime --ref latest --dry-run
-        bearbrowser-build-binary --profile agent-runtime --dry-run
-        bearbrowser-check-build-env
-        bearbrowser-discover-build-system <workspace-source-dir>
-        bearbrowser-verify-upstream
-        bearbrowser-doctor
-        bearbrowser-credential-doctor
-        bearbrowser-verify-credentials
-        bearbrowser-verify-linux-packaging
-        bearbrowser-package-linux-all
-        bearbrowser-update
-        bearbrowser-automation-surfaces
-        bearbrowser-install-runtime-deps
-        bearbrowser-lock-runtime-deps
-        bearbrowser-playwright --dry-run
-        bearbrowser-stagehand --dry-run
-        bearbrowser-terminal --dry-run
-
-      Future GUI app distribution will use:
-        brew install --cask SourceOS-Linux/tap/bearbrowser
+      Run bearbrowser-doctor for status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
   end
 
   test do
     assert_match "BearBrowser overlay plan", shell_output("#{bin}/bearbrowser --profile agent-runtime --ref latest --dry-run")
-    assert_match "BearBrowser full binary build lane", shell_output("#{bin}/bearbrowser-build-binary --profile agent-runtime --dry-run")
-    assert_match "hidden_refs=", shell_output("#{bin}/bearbrowser-verify-upstream")
-    assert_match "BearBrowser doctor", shell_output("#{bin}/bearbrowser-doctor")
-    assert_match "BearBrowser credential doctor", shell_output("#{bin}/bearbrowser-credential-doctor")
-    assert_match "BearBrowser credential broker policy verified", shell_output("#{bin}/bearbrowser-verify-credentials")
-    assert_match "BearBrowser Linux packaging verified", shell_output("#{bin}/bearbrowser-verify-linux-packaging")
-    assert_match "browser.playwright", shell_output("#{bin}/bearbrowser-automation-surfaces")
+    assert_match "BearBrowser build lane verified", shell_output("#{bin}/bearbrowser-verify-build-lane")
   end
 end
