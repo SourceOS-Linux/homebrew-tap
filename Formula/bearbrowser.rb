@@ -20,6 +20,8 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-verify-provenance").write wrapper_for("bearbrowser-verify-provenance.py")
     (bin/"bearbrowser-propose-action").write wrapper_for("bearbrowser-propose-action.py")
     (bin/"bearbrowser-verify-actions").write wrapper_for("bearbrowser-verify-actions.py")
+    (bin/"bearbrowser-sidecar-status").write wrapper_for("bearbrowser-sidecar-status.py")
+    (bin/"bearbrowser-verify-sidecar-status").write wrapper_for("verify-sidecar-status.sh")
     (bin/"bearbrowser-verify-agent-sidecar").write wrapper_for("verify-agent-sidecar-contract.py")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
     (bin/"bearbrowser-install-app-launcher").write wrapper_for("install-macos-app-launcher.sh")
@@ -56,7 +58,7 @@ class Bearbrowser < Formula
       BearBrowser Formula installs the overlay/runtime tooling.
       Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
       Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
-      Run bearbrowser-emit-event, bearbrowser-propose-action, and bearbrowser-verify-agent-sidecar for the local provenance/policy/agent sidecar plane.
+      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-sidecar-status, and bearbrowser-verify-agent-sidecar for the local provenance/policy/agent sidecar plane.
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
   end
@@ -68,5 +70,6 @@ class Bearbrowser < Formula
     assert_match "BearBrowser provenance", shell_output("#{bin}/bearbrowser-emit-event --event-type runtime.health --payload '{\"status\":\"test\"}'")
     assert_match "BearBrowser policy action", shell_output("#{bin}/bearbrowser-propose-action --action-type summarize_page --target-kind page --target-label test")
     assert_match "BearBrowser agent sidecar contract verified", shell_output("#{bin}/bearbrowser-verify-agent-sidecar")
+    assert_match "BearBrowser sidecar status verified", shell_output("#{bin}/bearbrowser-verify-sidecar-status")
   end
 end
