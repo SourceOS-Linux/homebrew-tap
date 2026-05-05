@@ -13,6 +13,9 @@ class Bearbrowser < Formula
     libexec.install Dir["*"]
 
     (bin/"bearbrowser").write wrapper_for("apply-sourceos-overlays.sh")
+    (bin/"bearbrowser-open").write wrapper_for("bearbrowser-open.sh")
+    (bin/"bearbrowser-status").write wrapper_for("bearbrowser-status.sh")
+    (bin/"bearbrowser-reset-bootstrap").write wrapper_for("bearbrowser-reset-bootstrap.sh")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
     (bin/"bearbrowser-install-app-launcher").write wrapper_for("install-macos-app-launcher.sh")
     (bin/"bearbrowser-repair-app-launcher").write wrapper_for("repair-macos-app-launcher.sh")
@@ -46,13 +49,14 @@ class Bearbrowser < Formula
     <<~EOS
       BearBrowser Formula installs the overlay/runtime tooling.
       Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
-      Run bearbrowser-repair-app-launcher if BearBrowser.app exists but does not open a browser.
-      Run bearbrowser-doctor for status and bearbrowser-verify-build-lane for build-lane readiness.
+      Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
+      Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
   end
 
   test do
     assert_match "BearBrowser overlay plan", shell_output("#{bin}/bearbrowser --profile agent-runtime --ref latest --dry-run")
+    assert_match "BearBrowser status", shell_output("#{bin}/bearbrowser-status")
     assert_match "BearBrowser build lane verified", shell_output("#{bin}/bearbrowser-verify-build-lane")
   end
 end
