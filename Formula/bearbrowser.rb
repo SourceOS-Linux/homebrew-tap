@@ -23,6 +23,7 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-sidecar-status").write wrapper_for("bearbrowser-sidecar-status.py")
     (bin/"bearbrowser-verify-sidecar-status").write wrapper_for("verify-sidecar-status.sh")
     (bin/"bearbrowser-verify-agent-sidecar").write wrapper_for("verify-agent-sidecar-contract.py")
+    (bin/"bearbrowser-verify-native-shell").write wrapper_for("verify-native-macos-shell.sh")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
     (bin/"bearbrowser-install-app-launcher").write wrapper_for("install-macos-app-launcher.sh")
     (bin/"bearbrowser-repair-app-launcher").write wrapper_for("repair-macos-app-launcher.sh")
@@ -59,6 +60,7 @@ class Bearbrowser < Formula
       Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
       Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
       Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-sidecar-status, and bearbrowser-verify-agent-sidecar for the local provenance/policy/agent sidecar plane.
+      Run bearbrowser-verify-native-shell for native shell checks.
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
   end
