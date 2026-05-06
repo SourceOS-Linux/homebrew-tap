@@ -19,6 +19,7 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-emit-event").write wrapper_for("bearbrowser-emit-event.py")
     (bin/"bearbrowser-verify-provenance").write wrapper_for("bearbrowser-verify-provenance.py")
     (bin/"bearbrowser-propose-action").write wrapper_for("bearbrowser-propose-action.py")
+    (bin/"bearbrowser-resolve-action").write wrapper_for("bearbrowser-resolve-action.py")
     (bin/"bearbrowser-verify-actions").write wrapper_for("bearbrowser-verify-actions.py")
     (bin/"bearbrowser-sidecar-status").write wrapper_for("bearbrowser-sidecar-status.py")
     (bin/"bearbrowser-verify-sidecar-status").write wrapper_for("verify-sidecar-status.sh")
@@ -59,7 +60,7 @@ class Bearbrowser < Formula
       BearBrowser Formula installs the overlay/runtime tooling.
       Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
       Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
-      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-sidecar-status, and bearbrowser-verify-agent-sidecar for the local provenance/policy/agent sidecar plane.
+      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-sidecar-status, and bearbrowser-verify-agent-sidecar for the local provenance/policy/agent sidecar plane.
       Run bearbrowser-verify-native-shell for native shell checks.
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
