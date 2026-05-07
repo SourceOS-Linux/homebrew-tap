@@ -23,6 +23,8 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-verify-actions").write wrapper_for("bearbrowser-verify-actions.py")
     (bin/"bearbrowser-memory-candidate").write wrapper_for("bearbrowser-memory-candidate.py")
     (bin/"bearbrowser-verify-memory").write wrapper_for("bearbrowser-verify-memory.py")
+    (bin/"bearbrowser-page-summary").write wrapper_for("bearbrowser-page-summary.py")
+    (bin/"bearbrowser-verify-summaries").write wrapper_for("bearbrowser-verify-summaries.py")
     (bin/"bearbrowser-governance-queue").write wrapper_for("bearbrowser-governance-queue.py")
     (bin/"bearbrowser-sidecar-server").write wrapper_for("bearbrowser-sidecar-server.py")
     (bin/"bearbrowser-sidecar-open").write wrapper_for("bearbrowser-sidecar-open.sh")
@@ -66,7 +68,7 @@ class Bearbrowser < Formula
       BearBrowser Formula installs the overlay/runtime tooling.
       Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
       Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
-      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-memory-candidate, bearbrowser-governance-queue, bearbrowser-sidecar-open, and bearbrowser-verify-agent-sidecar for the local provenance/policy/memory/agent sidecar plane.
+      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-memory-candidate, bearbrowser-page-summary, bearbrowser-governance-queue, bearbrowser-sidecar-open, and bearbrowser-verify-agent-sidecar for the local provenance/policy/memory/summary/agent sidecar plane.
       Run bearbrowser-verify-interactive-sidecar and bearbrowser-verify-native-shell for product-surface checks.
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
@@ -78,6 +80,8 @@ class Bearbrowser < Formula
     assert_match "BearBrowser build lane verified", shell_output("#{bin}/bearbrowser-verify-build-lane")
     assert_match "BearBrowser provenance", shell_output("#{bin}/bearbrowser-emit-event --event-type runtime.health --payload '{\"status\":\"test\"}'")
     assert_match "BearBrowser policy action", shell_output("#{bin}/bearbrowser-propose-action --action-type summarize_page --target-kind page --target-label test")
+    assert_match "BearBrowser page summary", shell_output("#{bin}/bearbrowser-page-summary create --text 'test page summary' --source-label test")
+    assert_match "BearBrowser page summary log verified", shell_output("#{bin}/bearbrowser-verify-summaries")
     assert_match "BearBrowser agent sidecar contract verified", shell_output("#{bin}/bearbrowser-verify-agent-sidecar")
     assert_match "BearBrowser sidecar status verified", shell_output("#{bin}/bearbrowser-verify-sidecar-status")
     assert_match "http://127.0.0.1:", shell_output("#{bin}/bearbrowser-sidecar-server --print-url")
