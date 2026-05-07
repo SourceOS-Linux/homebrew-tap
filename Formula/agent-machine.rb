@@ -6,9 +6,7 @@ class AgentMachine < Formula
   license "MIT"
   head "https://github.com/SourceOS-Linux/agent-machine.git", branch: "main"
 
-  RELEASE_EVIDENCE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-  CHECKSUM_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-  ROLLBACK_NOTE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+  RELEASE_EVIDENCE_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
 
   def install
     bin.install "bin/agent-machine"
@@ -46,11 +44,11 @@ class AgentMachine < Formula
       /run/agent-machine through SourceOS policy-aware activation flows.
 
       Release package evidence:
-        #{RELEASE_EVIDENCE}
+        #{RELEASE_EVIDENCE_RECORD}
       Checksum record:
-        #{CHECKSUM_RECORD}
+        #{RELEASE_EVIDENCE_RECORD}
       Rollback note:
-        #{ROLLBACK_NOTE}
+        #{RELEASE_EVIDENCE_RECORD}
     EOS
   end
 

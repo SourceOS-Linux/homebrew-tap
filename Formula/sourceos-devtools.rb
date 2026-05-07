@@ -6,9 +6,7 @@ class SourceosDevtools < Formula
   license "MIT"
   head "https://github.com/SourceOS-Linux/sourceos-devtools.git", branch: "main"
 
-  RELEASE_EVIDENCE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-  CHECKSUM_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-  ROLLBACK_NOTE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+  RELEASE_EVIDENCE_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
 
   def install
     libexec.install Dir["*"]
@@ -24,11 +22,11 @@ class SourceosDevtools < Formula
       sourceos-devtools release/package scaffold only. Runtime governance remains in the source repository contracts and CI gates.
 
       Release package evidence:
-        #{RELEASE_EVIDENCE}
+        #{RELEASE_EVIDENCE_RECORD}
       Checksum record:
-        #{CHECKSUM_RECORD}
+        #{RELEASE_EVIDENCE_RECORD}
       Rollback note:
-        #{ROLLBACK_NOTE}
+        #{RELEASE_EVIDENCE_RECORD}
     EOS
   end
 

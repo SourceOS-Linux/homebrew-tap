@@ -6,9 +6,7 @@ class Bearbrowser < Formula
   license "MPL-2.0"
   head "https://github.com/SourceOS-Linux/BearBrowser.git", branch: "main"
 
-  RELEASE_EVIDENCE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-  CHECKSUM_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-  ROLLBACK_NOTE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+  RELEASE_EVIDENCE_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
 
   depends_on "git"
   depends_on "python@3.12"
@@ -77,11 +75,11 @@ class Bearbrowser < Formula
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
 
       Release package evidence:
-        #{RELEASE_EVIDENCE}
+        #{RELEASE_EVIDENCE_RECORD}
       Checksum record:
-        #{CHECKSUM_RECORD}
+        #{RELEASE_EVIDENCE_RECORD}
       Rollback note:
-        #{ROLLBACK_NOTE}
+        #{RELEASE_EVIDENCE_RECORD}
     EOS
   end
 
