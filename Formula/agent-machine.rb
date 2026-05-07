@@ -6,6 +6,10 @@ class AgentMachine < Formula
   license "MIT"
   head "https://github.com/SourceOS-Linux/agent-machine.git", branch: "main"
 
+  RELEASE_EVIDENCE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+  CHECKSUM_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+  ROLLBACK_NOTE = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+
   def install
     bin.install "bin/agent-machine"
     chmod 0755, bin/"agent-machine"
@@ -40,6 +44,13 @@ class AgentMachine < Formula
       Runtime directories are not created automatically yet. Future setup commands
       will manage /etc/agent-machine, /var/lib/agent-machine, and
       /run/agent-machine through SourceOS policy-aware activation flows.
+
+      Release package evidence:
+        #{RELEASE_EVIDENCE}
+      Checksum record:
+        #{CHECKSUM_RECORD}
+      Rollback note:
+        #{ROLLBACK_NOTE}
     EOS
   end
 

@@ -1,0 +1,120 @@
+{
+  "packagingAuthority": {
+    "repository": "SourceOS-Linux/homebrew-tap",
+    "role": "distribution",
+    "nonAuthorityNote": "Packaging is distribution, not runtime governance; source contracts, tests, and policy gates stay in each source repository."
+  },
+  "requiredOperationTypes": [
+    "release.package.prepare",
+    "release.formula.update",
+    "release.checksum.verify",
+    "release.evidence.attach",
+    "release.rollback.record"
+  ],
+  "integrationTargets": [
+    "https://github.com/SocioProphet/delivery-excellence/issues/8",
+    "https://github.com/SourceOS-Linux/sourceos-devtools/issues/19",
+    "https://github.com/SocioProphet/workspace-inventory/issues/4",
+    "https://github.com/SourceOS-Linux/BearBrowser/issues/20",
+    "https://github.com/SourceOS-Linux/agent-machine/issues/18",
+    "https://github.com/SourceOS-Linux/sourceos-syncd/issues/3",
+    "https://github.com/SocioProphet/prophet-core-ledger/issues/1"
+  ],
+  "workspaceOperations": [
+    {
+      "surface": "SourceOS-Linux/BearBrowser",
+      "operationTypes": [
+        "release.package.prepare",
+        "release.formula.update",
+        "release.checksum.verify",
+        "release.evidence.attach",
+        "release.rollback.record"
+      ],
+      "artifacts": {
+        "packageFormula": "Formula/bearbrowser.rb + Casks/bearbrowser.rb",
+        "checksumRecord": "sha256:no_check (scaffold) with release checksum tracked in this record and source release assets",
+        "releaseNote": "https://github.com/SourceOS-Linux/BearBrowser/releases",
+        "rollbackNote": "If provenance/checksum/test evidence fails, keep existing formula version and revert cask/formula bump in homebrew-tap before republish.",
+        "buildTestEvidenceLink": "https://github.com/SourceOS-Linux/BearBrowser/actions",
+        "sourceCommitReference": "https://github.com/SourceOS-Linux/BearBrowser/commits/main",
+        "artifactProvenanceRecord": "https://github.com/SourceOS-Linux/BearBrowser"
+      }
+    },
+    {
+      "surface": "SourceOS-Linux/agent-machine",
+      "operationTypes": [
+        "release.package.prepare",
+        "release.formula.update",
+        "release.checksum.verify",
+        "release.evidence.attach",
+        "release.rollback.record"
+      ],
+      "artifacts": {
+        "packageFormula": "Formula/agent-machine.rb",
+        "checksumRecord": "git-source install at tagged commit; release checksum recorded alongside tagged source tarball in source repo release",
+        "releaseNote": "https://github.com/SourceOS-Linux/agent-machine/releases",
+        "rollbackNote": "Revert formula update to previous known-good commit and rerun source repo contract/test gates before publishing again.",
+        "buildTestEvidenceLink": "https://github.com/SourceOS-Linux/agent-machine/actions",
+        "sourceCommitReference": "https://github.com/SourceOS-Linux/agent-machine/commits/main",
+        "artifactProvenanceRecord": "https://github.com/SourceOS-Linux/agent-machine"
+      }
+    },
+    {
+      "surface": "SourceOS-Linux/TurtleTerm",
+      "operationTypes": [
+        "release.package.prepare",
+        "release.formula.update",
+        "release.checksum.verify",
+        "release.evidence.attach",
+        "release.rollback.record"
+      ],
+      "artifacts": {
+        "packageFormula": "Formula/turtleterm.rb",
+        "checksumRecord": "git-source install at tagged commit; release checksum tracked in source release artifacts",
+        "releaseNote": "https://github.com/SourceOS-Linux/TurtleTerm/releases",
+        "rollbackNote": "Revert formula update in homebrew-tap and restore prior package version until source contracts and tests pass.",
+        "buildTestEvidenceLink": "https://github.com/SourceOS-Linux/TurtleTerm/actions",
+        "sourceCommitReference": "https://github.com/SourceOS-Linux/TurtleTerm/commits/main",
+        "artifactProvenanceRecord": "https://github.com/SourceOS-Linux/TurtleTerm"
+      }
+    },
+    {
+      "surface": "SourceOS-Linux/sourceos-devtools",
+      "operationTypes": [
+        "release.package.prepare",
+        "release.formula.update",
+        "release.checksum.verify",
+        "release.evidence.attach",
+        "release.rollback.record"
+      ],
+      "artifacts": {
+        "packageFormula": "Formula/sourceos-devtools.rb",
+        "checksumRecord": "git-source install at tagged commit; release checksum tracked in source release artifacts",
+        "releaseNote": "https://github.com/SourceOS-Linux/sourceos-devtools/releases",
+        "rollbackNote": "Revert formula update and preserve last known-good package state until contracts/tests/policy gates succeed.",
+        "buildTestEvidenceLink": "https://github.com/SourceOS-Linux/sourceos-devtools/actions",
+        "sourceCommitReference": "https://github.com/SourceOS-Linux/sourceos-devtools/commits/main",
+        "artifactProvenanceRecord": "https://github.com/SourceOS-Linux/sourceos-devtools"
+      }
+    },
+    {
+      "surface": "SourceOS-Linux/sourceos-syncd",
+      "operationTypes": [
+        "release.package.prepare",
+        "release.formula.update",
+        "release.checksum.verify",
+        "release.evidence.attach",
+        "release.rollback.record"
+      ],
+      "artifacts": {
+        "packageFormula": "Formula/sourceos-syncd.rb",
+        "checksumRecord": "git-source install at tagged commit; release checksum tracked in source release artifacts",
+        "releaseNote": "https://github.com/SourceOS-Linux/sourceos-syncd/releases",
+        "rollbackNote": "Revert formula update and restore prior release until source repo gates and evidence pass.",
+        "buildTestEvidenceLink": "https://github.com/SourceOS-Linux/sourceos-syncd/actions",
+        "sourceCommitReference": "https://github.com/SourceOS-Linux/sourceos-syncd/commits/main",
+        "artifactProvenanceRecord": "https://github.com/SourceOS-Linux/sourceos-syncd"
+      }
+    }
+  ]
+}
