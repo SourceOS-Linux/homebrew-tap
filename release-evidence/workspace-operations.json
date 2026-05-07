@@ -31,7 +31,10 @@
         "release.rollback.record"
       ],
       "artifacts": {
-        "packageFormula": "Formula/bearbrowser.rb + Casks/bearbrowser.rb",
+        "packageFormula": [
+          "Formula/bearbrowser.rb",
+          "Casks/bearbrowser.rb"
+        ],
         "checksumRecord": "sha256:no_check (scaffold) with release checksum tracked in this record and source release assets",
         "releaseNote": "https://github.com/SourceOS-Linux/BearBrowser/releases",
         "rollbackNote": "If provenance/checksum/test evidence fails, keep existing formula version and revert cask/formula bump in homebrew-tap before republish.",
