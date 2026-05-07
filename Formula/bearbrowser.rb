@@ -24,8 +24,11 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-memory-candidate").write wrapper_for("bearbrowser-memory-candidate.py")
     (bin/"bearbrowser-verify-memory").write wrapper_for("bearbrowser-verify-memory.py")
     (bin/"bearbrowser-governance-queue").write wrapper_for("bearbrowser-governance-queue.py")
+    (bin/"bearbrowser-sidecar-server").write wrapper_for("bearbrowser-sidecar-server.py")
+    (bin/"bearbrowser-sidecar-open").write wrapper_for("bearbrowser-sidecar-open.sh")
     (bin/"bearbrowser-sidecar-status").write wrapper_for("bearbrowser-sidecar-status.py")
     (bin/"bearbrowser-verify-sidecar-status").write wrapper_for("verify-sidecar-status.sh")
+    (bin/"bearbrowser-verify-interactive-sidecar").write wrapper_for("verify-interactive-sidecar.sh")
     (bin/"bearbrowser-verify-agent-sidecar").write wrapper_for("verify-agent-sidecar-contract.py")
     (bin/"bearbrowser-verify-native-shell").write wrapper_for("verify-native-macos-shell.sh")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
@@ -63,8 +66,8 @@ class Bearbrowser < Formula
       BearBrowser Formula installs the overlay/runtime tooling.
       Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
       Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
-      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-memory-candidate, bearbrowser-governance-queue, bearbrowser-sidecar-status, and bearbrowser-verify-agent-sidecar for the local provenance/policy/memory/agent sidecar plane.
-      Run bearbrowser-verify-native-shell for native shell checks.
+      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-memory-candidate, bearbrowser-governance-queue, bearbrowser-sidecar-open, and bearbrowser-verify-agent-sidecar for the local provenance/policy/memory/agent sidecar plane.
+      Run bearbrowser-verify-interactive-sidecar and bearbrowser-verify-native-shell for product-surface checks.
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
     EOS
   end
@@ -77,5 +80,6 @@ class Bearbrowser < Formula
     assert_match "BearBrowser policy action", shell_output("#{bin}/bearbrowser-propose-action --action-type summarize_page --target-kind page --target-label test")
     assert_match "BearBrowser agent sidecar contract verified", shell_output("#{bin}/bearbrowser-verify-agent-sidecar")
     assert_match "BearBrowser sidecar status verified", shell_output("#{bin}/bearbrowser-verify-sidecar-status")
+    assert_match "http://127.0.0.1:", shell_output("#{bin}/bearbrowser-sidecar-server --print-url")
   end
 end
