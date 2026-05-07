@@ -1,3 +1,5 @@
+EVIDENCE_RECORD_URL = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+
 cask "bearbrowser" do
   version "0.1.0-overlay"
   sha256 :no_check
@@ -12,8 +14,8 @@ cask "bearbrowser" do
 
   caveats <<~EOS
     This cask is a release scaffold. Publish a signed and notarized BearBrowser.app DMG before promoting it into SourceOS-Linux/homebrew-tap.
-    Release package evidence: https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json
-    Checksum record: https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json
-    Rollback note: https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json
+    Release package evidence: #{EVIDENCE_RECORD_URL}
+    Checksum record: #{EVIDENCE_RECORD_URL}
+    Rollback note: #{EVIDENCE_RECORD_URL}
   EOS
 end
