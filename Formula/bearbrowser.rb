@@ -6,6 +6,8 @@ class Bearbrowser < Formula
   license "MPL-2.0"
   head "https://github.com/SourceOS-Linux/BearBrowser.git", branch: "main"
 
+  RELEASE_EVIDENCE_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
+
   depends_on "git"
   depends_on "python@3.12"
 
@@ -71,6 +73,13 @@ class Bearbrowser < Formula
       Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-memory-candidate, bearbrowser-page-summary, bearbrowser-governance-queue, bearbrowser-sidecar-open, and bearbrowser-verify-agent-sidecar for the local provenance/policy/memory/summary/agent sidecar plane.
       Run bearbrowser-verify-interactive-sidecar and bearbrowser-verify-native-shell for product-surface checks.
       Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
+
+      Release package evidence:
+        #{RELEASE_EVIDENCE_RECORD}
+      Checksum record:
+        #{RELEASE_EVIDENCE_RECORD}
+      Rollback note:
+        #{RELEASE_EVIDENCE_RECORD}
     EOS
   end
 

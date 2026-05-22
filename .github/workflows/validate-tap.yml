@@ -1,0 +1,69 @@
+name: validate-tap
+
+on:
+  pull_request:
+    paths:
+      - 'Formula/**'
+      - 'Casks/**'
+      - 'release-evidence/**'
+      - 'README.md'
+      - '.github/workflows/validate-tap.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Formula/**'
+      - 'Casks/**'
+      - 'release-evidence/**'
+      - 'README.md'
+      - '.github/workflows/validate-tap.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ruby syntax check formulas and casks
+        run: |
+          set -euo pipefail
+          find Formula Casks -type f \( -name '*.rb' -o -name '*.rbi' \) -print0 | while IFS= read -r -d '' file; do
+            ruby -c "$file"
+          done
+
+      - name: Validate release evidence JSON
+        run: |
+          set -euo pipefail
+          python3 -m json.tool release-evidence/workspace-operations.json >/tmp/workspace-operations.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('release-evidence/workspace-operations.json').read_text())
+          required = {
+              'release.package.prepare',
+              'release.formula.update',
+              'release.checksum.verify',
+              'release.evidence.attach',
+              'release.rollback.record',
+          }
+          ops = set(data.get('requiredOperationTypes', []))
+          missing = sorted(required - ops)
+          if missing:
+              raise SystemExit(f'missing required operation types: {missing}')
+          if data.get('packagingAuthority', {}).get('role') != 'distribution':
+              raise SystemExit('packagingAuthority.role must be distribution')
+          for entry in data.get('workspaceOperations', []):
+              surface = entry.get('surface', '<unknown>')
+              entry_ops = set(entry.get('operationTypes', []))
+              if not required.issubset(entry_ops):
+                  raise SystemExit(f'{surface}: missing operation type')
+              artifacts = entry.get('artifacts', {})
+              for key in ['packageFormula', 'checksumRecord', 'releaseNote', 'rollbackNote', 'buildTestEvidenceLink', 'sourceCommitReference', 'artifactProvenanceRecord']:
+                  if key not in artifacts:
+                      raise SystemExit(f'{surface}: missing artifacts.{key}')
+          print('release evidence ok')
+          PY
