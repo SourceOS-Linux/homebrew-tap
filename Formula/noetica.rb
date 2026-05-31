@@ -14,7 +14,7 @@ class Noetica < Formula
     libexec.install Dir["*"]
 
     cd libexec do
-      system Formula["node"].opt_bin/"npm", "install", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"
+      system Formula["node"].opt_bin/"npm", "install", "--ignore-scripts", "--no-audit", "--no-fund"
     end
 
     (bin/"noetica").write <<~EOS
