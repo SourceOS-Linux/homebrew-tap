@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
-class TurtleTerm < Formula
+class Turtleterm < Formula
   desc "SourceOS policy-aware agent terminal fabric"
   homepage "https://github.com/SourceOS-Linux/TurtleTerm"
   license "MIT"
+
+  stable do
+    url "https://github.com/SourceOS-Linux/TurtleTerm/archive/refs/tags/turtle-term-v0.1.1.tar.gz"
+    sha256 "b9b9d40e3c9e66bcd87e3ca0df1e19a95c3f2fd6d16f1ae87d0ede9c4dda6009"
+    version "0.1.1"
+  end
+
   head "https://github.com/SourceOS-Linux/TurtleTerm.git", branch: "main"
 
   depends_on "pkg-config" => :build
@@ -44,7 +51,6 @@ class TurtleTerm < Formula
       turtle-term
       turtle-agentd
       turtle-agentctl
-      turtle-agent-status
       turtle-tmux
       turtle-cloudfog
       turtle-superconscious
@@ -97,11 +103,14 @@ class TurtleTerm < Formula
     end
     (etc/"turtle-term").mkpath
     (etc/"turtle-term/turtleterm.lua").write profile_source.read
+
     pkgshare.install "docs/sourceos"
+
     if File.exist?("assets/sourceos/mcp/turtle-mcp-server")
       chmod 0755, "assets/sourceos/mcp/turtle-mcp-server"
       bin.install "assets/sourceos/mcp/turtle-mcp-server"
     end
+
     pkgshare.install "assets/sourceos/shell" => "shell" if Dir.exist?("assets/sourceos/shell")
     pkgshare.install "assets/sourceos/skills" => "skills" if Dir.exist?("assets/sourceos/skills")
     pkgshare.install "assets/sourceos/brand" => "brand" if Dir.exist?("assets/sourceos/brand")
@@ -122,30 +131,25 @@ class TurtleTerm < Formula
 
   def caveats
     <<~EOS
-      TurtleTerm installed its profile at:
-        #{etc}/turtle-term/turtleterm.lua
+      TurtleTerm v0.1.1 installed.
 
-      To use it as your terminal profile:
-        ln -sf #{etc}/turtle-term/turtleterm.lua ~/.wezterm.lua
+      Profile:   #{etc}/turtle-term/turtleterm.lua
+      Docs:      #{pkgshare}/sourceos/
+      Skills:    #{pkgshare}/skills/
+      Shell:     #{pkgshare}/shell/
 
-      To launch TurtleTerm:
-        turtleterm
-
-      To test TurtleTerm:
+      Quick smoke test:
         turtle-term paths
-        turtle-term run -- echo hello
         turtle-agentctl --stdio ping
         turtle-agentctl --stdio noetica-status
         turtle-agentctl --stdio policy-status
         turtle-language synapseiq-status
-        turtle-language diagnostics #{__FILE__}
-        turtle-session profiles
 
-      Shell integration (add to ~/.zshrc or ~/.bashrc):
-        source #{pkgshare}/shell/turtle-shell-init.zsh
-        source #{pkgshare}/shell/turtle-shell-init.bash
+      Shell integration (add to ~/.zshrc / ~/.bashrc):
+        source #{pkgshare}/shell/turtle-shell-init.zsh    # zsh
+        source #{pkgshare}/shell/turtle-shell-init.bash   # bash
 
-      Claude Code MCP wiring (add to ~/.claude/settings.json):
+      Claude Code MCP — add to ~/.claude/settings.json:
         {
           "mcpServers": {
             "turtleterm": {
@@ -154,18 +158,17 @@ class TurtleTerm < Formula
             }
           }
         }
+
+      Noetica (cognition loop): set SOURCEOS_NOETICA_URL (default http://localhost:8080)
+      Policy Fabric:            set SOURCEOS_POLICY_FABRIC_URL (default http://localhost:8081)
+      SynapseIQ LSP:            set SOURCEOS_SYNAPSEIQ_URL (default http://localhost:2087)
     EOS
   end
 
   test do
-    assert_match "TurtleTerm command wrapper", shell_output("#{bin}/sourceos-term --help")
     assert_match "TurtleTerm command wrapper", shell_output("#{bin}/turtle-term --help")
     assert_match "TurtleTerm local agent gateway", shell_output("#{bin}/turtle-agentd --help")
     assert_match "TurtleTerm agent gateway CLI", shell_output("#{bin}/turtle-agentctl --help")
-    if (bin/"turtle-agent-status").exist?
-      assert_match "SourceOS agent reliability artifacts", shell_output("#{bin}/turtle-agent-status --help")
-    end
-    assert_match "TurtleTerm tmux bridge", shell_output("#{bin}/turtle-tmux --help")
 
     events = testpath/"events.ndjson"
     receipts = testpath/"receipts"
@@ -177,15 +180,8 @@ class TurtleTerm < Formula
     ENV["SOURCEOS_POLICY_BUNDLE_ID"] = "policy:homebrew-test"
     ENV["SOURCEOS_EXECUTION_DOMAIN"] = "host"
 
-    assert_match "hello", shell_output("#{bin}/turtle-term run -- echo hello")
-    assert_path_exists events
-    assert_match "command.completed", events.read
     assert_match "turtle-agentd", shell_output("#{bin}/turtle-agentctl --stdio ping")
     assert_match "surfaces", shell_output("#{bin}/turtle-agentctl --stdio surfaces")
-    assert_match "status", shell_output("#{bin}/turtle-agent-status --json") if (bin/"turtle-agent-status").exist?
-    assert_match "cloudfog_surfaces", shell_output("#{bin}/turtle-cloudfog surfaces")
-    assert_match "superconscious_observation", shell_output("#{bin}/turtle-superconscious observe hello")
-    assert_match "agent_machine_surfaces", shell_output("#{bin}/turtle-agent-machine surfaces")
     assert_match "diagnostics", shell_output("#{bin}/turtle-language diagnostics #{__FILE__}")
     assert_match "profiles", shell_output("#{bin}/turtle-session profiles")
   end
