@@ -6,9 +6,9 @@ class Turtleterm < Formula
   license "MIT"
 
   stable do
-    url "https://github.com/SourceOS-Linux/TurtleTerm/archive/refs/tags/turtle-term-v0.1.1.tar.gz"
-    sha256 "b9b9d40e3c9e66bcd87e3ca0df1e19a95c3f2fd6d16f1ae87d0ede9c4dda6009"
-    version "0.1.1"
+    url "https://github.com/SourceOS-Linux/TurtleTerm/archive/refs/tags/turtle-term-v0.2.0.tar.gz"
+    sha256 "fb63be1fddc72c77bacf87ff91cbb63988825af607ed2e193600336abf18dc52"
+    version "0.2.0"
   end
 
   head "https://github.com/SourceOS-Linux/TurtleTerm.git", branch: "main"
@@ -115,6 +115,7 @@ class Turtleterm < Formula
     pkgshare.install "assets/sourceos/skills" => "skills" if Dir.exist?("assets/sourceos/skills")
     pkgshare.install "assets/sourceos/brand" => "brand" if Dir.exist?("assets/sourceos/brand")
     pkgshare.install "assets/sourceos/desktop" => "desktop" if Dir.exist?("assets/sourceos/desktop")
+    pkgshare.install "assets/sourceos/mcp" => "mcp" if Dir.exist?("assets/sourceos/mcp")
 
     if OS.linux?
       if File.exist?("assets/sourceos/desktop/ai.sourceos.TurtleTerm.desktop")
@@ -131,23 +132,16 @@ class Turtleterm < Formula
 
   def caveats
     <<~EOS
-      TurtleTerm v0.1.1 installed.
+      TurtleTerm v0.2.0 installed.
 
-      Profile:   #{etc}/turtle-term/turtleterm.lua
-      Docs:      #{pkgshare}/sourceos/
-      Skills:    #{pkgshare}/skills/
-      Shell:     #{pkgshare}/shell/
+      Profile:     #{etc}/turtle-term/turtleterm.lua
+      Shell inits: #{pkgshare}/shell/
+      MCP server:  #{bin}/turtle-mcp-server
 
-      Quick smoke test:
-        turtle-term paths
-        turtle-agentctl --stdio ping
-        turtle-agentctl --stdio noetica-status
-        turtle-agentctl --stdio policy-status
-        turtle-language synapseiq-status
-
-      Shell integration (add to ~/.zshrc / ~/.bashrc):
-        source #{pkgshare}/shell/turtle-shell-init.zsh    # zsh
-        source #{pkgshare}/shell/turtle-shell-init.bash   # bash
+      Shell integration — add to your shell rc:
+        source #{pkgshare}/shell/turtle-shell-init.zsh   # zsh
+        source #{pkgshare}/shell/turtle-shell-init.bash  # bash
+        source #{pkgshare}/shell/turtle-shell-init.fish  # fish (add to config.fish)
 
       Claude Code MCP — add to ~/.claude/settings.json:
         {
@@ -159,9 +153,24 @@ class Turtleterm < Formula
           }
         }
 
-      Noetica (cognition loop): set SOURCEOS_NOETICA_URL (default http://localhost:8080)
-      Policy Fabric:            set SOURCEOS_POLICY_FABRIC_URL (default http://localhost:8081)
-      SynapseIQ LSP:            set SOURCEOS_SYNAPSEIQ_URL (default http://localhost:2087)
+      AI features:
+        Set ANTHROPIC_API_KEY for Claude-powered explain/NL-to-shell.
+        Fallback: SOURCEOS_NOETICA_URL (default http://localhost:8080)
+
+      Keybinds (in TurtleTerm):
+        CMD+↑ / CMD+↓       Jump between prompt marks
+        CMD+B               Copy last command output to clipboard
+        CMD+SHIFT+B         Copy last command to clipboard
+        CTRL+SHIFT+E        Explain selected text (AI)
+        CTRL+SHIFT+N        Natural language → shell command
+        CTRL+SHIFT+A        Show Atlas context from .atlas/
+        CTRL+SHIFT+G        Policy gate prompt
+
+      Quick smoke test:
+        turtle-agentctl --stdio ping
+        turtle-agentctl explain-selection "No such file or directory"
+        turtle-agentctl nl-to-shell "show disk usage by directory"
+        turtle-agentctl atlas-context .
     EOS
   end
 
@@ -176,13 +185,18 @@ class Turtleterm < Formula
     ENV["SOURCEOS_WORKSPACE"] = "turtle-term-brew"
     ENV["SOURCEOS_TERMINAL_EVENTS"] = events.to_s
     ENV["SOURCEOS_TERMINAL_RECEIPTS"] = receipts.to_s
-    ENV["SOURCEOS_ACTOR_ID"] = "test:homebrew"
-    ENV["SOURCEOS_POLICY_BUNDLE_ID"] = "policy:homebrew-test"
     ENV["SOURCEOS_EXECUTION_DOMAIN"] = "host"
+    ENV["ANTHROPIC_API_KEY"] = ""
 
     assert_match "turtle-agentd", shell_output("#{bin}/turtle-agentctl --stdio ping")
     assert_match "surfaces", shell_output("#{bin}/turtle-agentctl --stdio surfaces")
+    assert_match "explain_selection", shell_output("#{bin}/turtle-agentctl --stdio explain-selection 'test output'")
+    assert_match "nl_to_shell", shell_output("#{bin}/turtle-agentctl --stdio nl-to-shell 'list files by size'")
+    assert_match "atlas_context", shell_output("#{bin}/turtle-agentctl --stdio atlas-context #{testpath}")
     assert_match "diagnostics", shell_output("#{bin}/turtle-language diagnostics #{__FILE__}")
-    assert_match "profiles", shell_output("#{bin}/turtle-session profiles")
+    assert_path_exists "#{pkgshare}/shell/turtle-shell-init.zsh"
+    assert_path_exists "#{pkgshare}/shell/turtle-shell-init.bash"
+    assert_path_exists "#{pkgshare}/shell/turtle-shell-init.fish"
+    assert_path_exists "#{bin}/turtle-mcp-server"
   end
 end
