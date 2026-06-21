@@ -67,6 +67,18 @@ class Turtleterm < Formula
       turtle-perf
       turtle-persona
       turtle-files
+      turtle-bg
+      turtle-dash
+      turtle-pr
+      turtle-issue
+      turtle-hooks
+      turtle-gitea
+      turtle-ci
+      turtle-review
+      turtle-watch
+      turtle-cost
+      turtle-copilot
+      turtle-gh
     ]
     turtle_scripts.each do |script|
       script_path = "assets/sourceos/bin/#{script}"
@@ -150,7 +162,7 @@ class Turtleterm < Formula
 
   def caveats
     <<~EOS
-      TurtleTerm v0.9.0 installed.
+      TurtleTerm v1.3.0 installed.
 
       Profile:     #{etc}/turtle-term/turtleterm.lua
       Shell inits: #{pkgshare}/shell/
@@ -174,6 +186,54 @@ class Turtleterm < Formula
       AI features:
         Set ANTHROPIC_API_KEY for Claude-powered explain/NL-to-shell.
         Fallback: SOURCEOS_NOETICA_URL (default http://localhost:8080)
+
+      Gitea sovereign forge (primary — GitHub is fallback only):
+        export GITEA_URL=http://your-gitea:3000
+        export GITEA_TOKEN=your-token
+        turtle-gitea status             Check Gitea connection + version
+        turtle-gitea repos              List repositories
+        turtle-gitea pr list            List open PRs
+        turtle-gitea pr create          Create PR from current branch
+        turtle-gitea release --tag v1.0 Create a release
+        turtle-gitea ci                 Show recent CI runs
+        turtle-gitea ci watch RUN_ID    Watch a CI run to completion
+
+      CI/CD pipeline view:
+        turtle-ci                       List recent CI runs (Gitea Actions primary, gh fallback)
+        turtle-ci watch                 Watch latest run live
+        turtle-ci pass                  Block until latest run passes or fails
+
+      AI-annotated PR review:
+        turtle-review                   Review latest open PR with AI annotation
+        turtle-review 42                Review PR #42
+        turtle-review --diff            Review staged local diff
+
+      Process supervisor:
+        turtle-watch "npm run dev"      Run + auto-restart on crash
+        turtle-watch list               Show all supervised processes
+
+      API cost tracker:
+        turtle-cost                     Show AI API cost summary across sessions
+        turtle-cost today               Today's cost breakdown by model
+        turtle-cost reset               Clear cost log
+
+      Self-hosted AI co-pilot (multi-backend: Claude, Ollama, Noetica):
+        turtle-copilot start            Start always-on watcher (auto-explains errors)
+        turtle-copilot chat             Multi-turn conversation with your co-pilot
+        turtle-copilot suggest          View latest proactive suggestions
+        turtle-copilot backends         List available AI backends
+        turtle-copilot use ollama       Switch to local Ollama model (no cloud needed)
+        turtle-copilot use noetica      Switch to self-hosted Noetica backend
+
+      gh CLI parity (Gitea primary, GitHub fallback):
+        turtle-gh status                Forge status: open PRs, issues, co-pilot state
+        turtle-gh repo create NAME      Create a repo on Gitea
+        turtle-gh pr create --ai        Create PR with AI-generated body
+        turtle-gh pr list               List open PRs
+        turtle-gh issue list            List issues
+        turtle-gh release create --ai-changelog   Release with AI-generated changelog
+        turtle-gh search repos QUERY    Semantic repo search (AI-ranked)
+        turtle-gh run watch             Watch CI run live
 
       Cross-session tools:
         turtle-persona install devops   Install DevOps AI persona
