@@ -79,6 +79,10 @@ class Turtleterm < Formula
       turtle-cost
       turtle-copilot
       turtle-gh
+      turtle-env
+      turtle-diagnose
+      turtle-apply
+      turtle-chain
     ]
     turtle_scripts.each do |script|
       script_path = "assets/sourceos/bin/#{script}"
@@ -162,7 +166,7 @@ class Turtleterm < Formula
 
   def caveats
     <<~EOS
-      TurtleTerm v1.3.0 installed.
+      TurtleTerm v1.4.0 installed.
 
       Profile:     #{etc}/turtle-term/turtleterm.lua
       Shell inits: #{pkgshare}/shell/
@@ -275,6 +279,28 @@ class Turtleterm < Formula
 
       Shell integration (first-run):
         turtleterm --install-shell-integration
+
+      Project environment management:
+        turtle-env init                 Create .turtle/env.yaml in project root
+        turtle-env set KEY VALUE        Set a project env var
+        eval $(turtle-env load)         Load project env into shell
+        turtle-env scan                 Detect env vars used in source files
+        turtle-env diff                 Compare project vs shell env
+
+      Diagnostics:
+        turtle-diagnose                 Full health check all integrations
+        turtle-diagnose --fix           Show fix suggestions for failing checks
+
+      AI patch application:
+        turtle-apply                    Apply latest co-pilot suggestion to files
+        turtle-apply --dry-run          Preview changes without writing
+        cat fix.patch | turtle-apply    Apply a unified diff from stdin
+
+      Agent action pipelines:
+        turtle-chain workspace-scan -- copilot-chat message="{project_type}"
+        turtle-chain --run pr-auto     Run saved pipeline
+        turtle-chain --list            List all saved + built-in pipelines
+        turtle-chain --save NAME STEPS Save a custom pipeline
 
       Quick smoke test:
         turtle-agentctl --stdio ping
