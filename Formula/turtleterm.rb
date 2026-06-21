@@ -57,6 +57,16 @@ class Turtleterm < Formula
       turtle-agent-machine
       turtle-language
       turtle-session
+      turtle-synapseiq
+      synapseiq-lsp
+      turtle-plan-view
+      turtle-selftest
+      turtle-runbook
+      turtle-voice
+      turtle-sync
+      turtle-perf
+      turtle-persona
+      turtle-files
     ]
     turtle_scripts.each do |script|
       script_path = "assets/sourceos/bin/#{script}"
@@ -116,6 +126,14 @@ class Turtleterm < Formula
     pkgshare.install "assets/sourceos/brand" => "brand" if Dir.exist?("assets/sourceos/brand")
     pkgshare.install "assets/sourceos/desktop" => "desktop" if Dir.exist?("assets/sourceos/desktop")
     pkgshare.install "assets/sourceos/mcp" => "mcp" if Dir.exist?("assets/sourceos/mcp")
+    pkgshare.install "assets/sourceos/neovim" => "neovim" if Dir.exist?("assets/sourceos/neovim")
+
+    # Bundle SynapseIQ LSP server if the repo was present at build time
+    synapseiq_server = buildpath.parent/"synapseiq/packages/lsp/src/server.js"
+    if synapseiq_server.exist?
+      (pkgshare/"synapseiq").mkpath
+      (pkgshare/"synapseiq").install synapseiq_server
+    end
 
     if OS.linux?
       if File.exist?("assets/sourceos/desktop/ai.sourceos.TurtleTerm.desktop")
@@ -132,16 +150,16 @@ class Turtleterm < Formula
 
   def caveats
     <<~EOS
-      TurtleTerm v0.2.0 installed.
+      TurtleTerm v0.9.0 installed.
 
       Profile:     #{etc}/turtle-term/turtleterm.lua
       Shell inits: #{pkgshare}/shell/
       MCP server:  #{bin}/turtle-mcp-server
 
       Shell integration — add to your shell rc:
-        source #{pkgshare}/shell/turtle-shell-init.zsh   # zsh
-        source #{pkgshare}/shell/turtle-shell-init.bash  # bash
-        source #{pkgshare}/shell/turtle-shell-init.fish  # fish (add to config.fish)
+        source #{pkgshare}/shell/turtle-shell-init.zsh   # zsh  (debounced AI ghost-text, ALT+/)
+        source #{pkgshare}/shell/turtle-shell-init.bash  # bash  (ALT+/ explicit, ALT+G background)
+        source #{pkgshare}/shell/turtle-shell-init.fish  # fish  (ALT+/ explicit, ALT+G background)
 
       Claude Code MCP — add to ~/.claude/settings.json:
         {
@@ -157,14 +175,46 @@ class Turtleterm < Formula
         Set ANTHROPIC_API_KEY for Claude-powered explain/NL-to-shell.
         Fallback: SOURCEOS_NOETICA_URL (default http://localhost:8080)
 
+      Cross-session tools:
+        turtle-persona install devops   Install DevOps AI persona
+        turtle-voice                    Voice-to-shell (requires sox + whisper-cpp)
+        turtle-sync push --remote URL   Sync config across machines
+        turtle-perf stats               View command performance stats
+        turtle-files [DIR]              Browse files inline
+
       Keybinds (in TurtleTerm):
-        CMD+↑ / CMD+↓       Jump between prompt marks
-        CMD+B               Copy last command output to clipboard
-        CMD+SHIFT+B         Copy last command to clipboard
-        CTRL+SHIFT+E        Explain selected text (AI)
-        CTRL+SHIFT+N        Natural language → shell command
-        CTRL+SHIFT+A        Show Atlas context from .atlas/
-        CTRL+SHIFT+G        Policy gate prompt
+        CMD+↑ / CMD+↓          Jump between prompt marks
+        CMD+B                   Copy last command output to clipboard
+        CTRL+SHIFT+N            Natural language → shell command
+        CTRL+SHIFT+Z            Pre-exec risk check
+        CTRL+SHIFT+V            Environment inspector
+        CTRL+SHIFT+D            Docker picker
+        CTRL+SHIFT+H            SSH picker
+        CTRL+SHIFT+B/K          Bookmark save/browse
+        CTRL+ALT+F              Fuzzy output search
+        CTRL+ALT+T              File browser
+        CTRL+ALT+X              Explain command in prompt
+        CMD+SHIFT+X             Export output (markdown/JSON/HTML/Gist)
+        CMD+[                   Collapse/expand output block
+        CMD+SHIFT+C             Copy output block
+        CMD+SHIFT+ALT+P         Plugin command palette
+        CTRL+SHIFT+ALT+S        SFTP browser (in SSH panes)
+        F4                      Voice-to-shell (Whisper.cpp)
+        F5                      Session narrative (AI summary)
+        F6                      AI Terminal Coach
+
+      Language intelligence (SynapseIQ LSP):
+        turtle-synapseiq start          Start on port 2087
+        turtle-synapseiq status         Check reachability
+        turtle-language diagnostics file.py
+        turtle-language symbols file.ts
+
+      Neovim plugin:
+        source #{pkgshare}/neovim/plugin/turtle.vim
+        " or with vim-plug: Plug 'SourceOS-Linux/TurtleTerm', {'rtp': 'assets/sourceos/neovim'}
+
+      Shell integration (first-run):
+        turtleterm --install-shell-integration
 
       Quick smoke test:
         turtle-agentctl --stdio ping
