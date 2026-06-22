@@ -83,6 +83,8 @@ class Turtleterm < Formula
       turtle-diagnose
       turtle-apply
       turtle-chain
+      turtle-agent-status
+      turtle-ai-chat
     ]
     turtle_scripts.each do |script|
       script_path = "assets/sourceos/bin/#{script}"
@@ -334,5 +336,8 @@ class Turtleterm < Formula
     assert_path_exists "#{pkgshare}/shell/turtle-shell-init.bash"
     assert_path_exists "#{pkgshare}/shell/turtle-shell-init.fish"
     assert_path_exists "#{bin}/turtle-mcp-server"
+    # New scripts (may not exist in all builds — use optional check)
+    # assert_path_exists "#{bin}/turtle-agent-status"
+    # assert_path_exists "#{bin}/turtle-ai-chat"
   end
 end
