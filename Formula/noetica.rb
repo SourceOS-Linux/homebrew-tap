@@ -13,9 +13,7 @@ class Noetica < Formula
   def install
     libexec.install Dir["*"]
 
-    cd libexec do
-      system Formula["node"].opt_bin/"npm", "install", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"
-    end
+    system Formula["node"].opt_bin/"npm", "install", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund", chdir: libexec
 
     (bin/"noetica").write <<~EOS
       #!/usr/bin/env bash
