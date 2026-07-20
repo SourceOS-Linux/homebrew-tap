@@ -6,8 +6,6 @@ class Bearbrowser < Formula
   license "MPL-2.0"
   head "https://github.com/SourceOS-Linux/BearBrowser.git", branch: "main"
 
-  RELEASE_EVIDENCE_RECORD = "https://github.com/SourceOS-Linux/homebrew-tap/blob/main/release-evidence/workspace-operations.json"
-
   depends_on "git"
   depends_on "python@3.12"
 
@@ -34,7 +32,25 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-verify-sidecar-status").write wrapper_for("verify-sidecar-status.sh")
     (bin/"bearbrowser-verify-interactive-sidecar").write wrapper_for("verify-interactive-sidecar.sh")
     (bin/"bearbrowser-verify-agent-sidecar").write wrapper_for("verify-agent-sidecar-contract.py")
+
+    # Sovereign cockpit — assemble (build client-vue + the agent-machine sidecar binary)
+    # then run it, governed. The Cellar is read-only, so both target a writable user data
+    # dir. `assemble` needs node + bun (see caveats); it checks and guides if they're absent.
+    cockpit_res = '${XDG_DATA_HOME:-$HOME/.local/share}/bearbrowser/cockpit-app/Contents/Resources'
+    (bin/"bearbrowser-cockpit-assemble").write <<~EOS
+      #!/usr/bin/env bash
+      set -euo pipefail
+      export STAGE="#{cockpit_res}"
+      exec bash "#{libexec}/scripts/assemble-cockpit.sh" "$@"
+    EOS
+    (bin/"bearbrowser-cockpit-up").write <<~EOS
+      #!/usr/bin/env bash
+      set -euo pipefail
+      export BEARBROWSER_COCKPIT_RES="#{cockpit_res}"
+      exec bash "#{libexec}/scripts/bearbrowser-cockpit-up" "$@"
+    EOS
     (bin/"bearbrowser-verify-native-shell").write wrapper_for("verify-native-macos-shell.sh")
+    (bin/"bearbrowser-verify-control-plane").write wrapper_for("verify-sourceos-control-plane.py")
     (bin/"bearbrowser-build-binary").write wrapper_for("bearbrowser-build-binary.sh")
     (bin/"bearbrowser-install-app-launcher").write wrapper_for("install-macos-app-launcher.sh")
     (bin/"bearbrowser-repair-app-launcher").write wrapper_for("repair-macos-app-launcher.sh")
@@ -54,6 +70,7 @@ class Bearbrowser < Formula
     (bin/"bearbrowser-playwright").write wrapper_for("bearbrowser-playwright.sh")
     (bin/"bearbrowser-stagehand").write wrapper_for("bearbrowser-stagehand.sh")
     (bin/"bearbrowser-terminal").write wrapper_for("bearbrowser-terminal.sh")
+    (bin/"bearbrowser-history").write wrapper_for("bearbrowser-history.py")
   end
 
   def wrapper_for(script)
@@ -68,31 +85,87 @@ class Bearbrowser < Formula
   def caveats
     <<~EOS
       BearBrowser Formula installs the overlay/runtime tooling.
-      Run bearbrowser-install-app-launcher to place BearBrowser.app in /Applications.
-      Run bearbrowser-open to launch it, bearbrowser-status to inspect state, and bearbrowser-reset-bootstrap to stop old bootstrap Firefox profile processes.
-      Run bearbrowser-emit-event, bearbrowser-propose-action, bearbrowser-resolve-action, bearbrowser-memory-candidate, bearbrowser-page-summary, bearbrowser-governance-queue, bearbrowser-sidecar-open, and bearbrowser-verify-agent-sidecar for the local provenance/policy/memory/summary/agent sidecar plane.
-      Run bearbrowser-verify-interactive-sidecar and bearbrowser-verify-native-shell for product-surface checks.
-      Run bearbrowser-doctor for system status and bearbrowser-verify-build-lane for build-lane readiness.
 
-      Release package evidence:
-        #{RELEASE_EVIDENCE_RECORD}
-      Checksum record:
-        #{RELEASE_EVIDENCE_RECORD}
-      Rollback note:
-        #{RELEASE_EVIDENCE_RECORD}
+      Useful commands:
+        bearbrowser-install-app-launcher
+        bearbrowser-repair-app-launcher
+        bearbrowser-open
+        bearbrowser-status
+        bearbrowser-reset-bootstrap
+        bearbrowser-emit-event --event-type runtime.health --payload '{"status":"ok"}'
+        bearbrowser-verify-provenance
+        bearbrowser-propose-action --action-type summarize_page --target-kind page --target-label current-page
+        bearbrowser-resolve-action --latest-held --decision deny --reason 'Local denial.'
+        bearbrowser-verify-actions
+        bearbrowser-memory-candidate create --text 'Remember this only after approval.'
+        bearbrowser-memory-candidate resolve --latest-candidate --decision reject --reason 'Not useful.'
+        bearbrowser-verify-memory
+        bearbrowser-page-summary create --text 'Read-only summary candidate.'
+        bearbrowser-verify-summaries
+        bearbrowser-governance-queue
+        bearbrowser-sidecar-open --open
+        bearbrowser-sidecar-server --print-url
+        bearbrowser-sidecar-status --format html --open
+        bearbrowser-verify-interactive-sidecar
+        bearbrowser-verify-sidecar-status
+        bearbrowser-verify-agent-sidecar
+        bearbrowser-verify-native-shell
+        bearbrowser-verify-control-plane
+
+      Sovereign cockpit (one governed unit; needs: brew install node bun):
+        bearbrowser-cockpit-assemble   # build client-vue + agent-machine → ~/.local/share/bearbrowser
+        bearbrowser-cockpit-up         # run governed: cockpit → gate → agent-machine (+ receipts), loopback only
+
+        bearbrowser --profile agent-runtime --ref latest --dry-run
+        bearbrowser-build-binary --profile agent-runtime --dry-run
+        bearbrowser-verify-build-lane
+        bearbrowser-check-build-env
+        bearbrowser-discover-build-system <workspace-source-dir>
+        bearbrowser-verify-upstream
+        bearbrowser-doctor
+        bearbrowser-credential-doctor
+        bearbrowser-verify-credentials
+        bearbrowser-verify-linux-packaging
+        bearbrowser-package-linux-all
+        bearbrowser-update
+        bearbrowser-automation-surfaces
+        bearbrowser-install-runtime-deps
+        bearbrowser-lock-runtime-deps
+        bearbrowser-playwright --dry-run
+        bearbrowser-stagehand --dry-run
+        bearbrowser-terminal --dry-run
+        bearbrowser-history policy explain --profile agent-runtime --dry-run
+        bearbrowser-history export explain --session demo --profile agent-runtime --dry-run
+        bearbrowser-history redactions --dry-run
+
+      Full signed app distribution will use:
+        brew install --cask SourceOS-Linux/tap/bearbrowser
     EOS
   end
 
   test do
     assert_match "BearBrowser overlay plan", shell_output("#{bin}/bearbrowser --profile agent-runtime --ref latest --dry-run")
     assert_match "BearBrowser status", shell_output("#{bin}/bearbrowser-status")
+    assert_match "BearBrowser full binary build lane", shell_output("#{bin}/bearbrowser-build-binary --profile agent-runtime --dry-run")
     assert_match "BearBrowser build lane verified", shell_output("#{bin}/bearbrowser-verify-build-lane")
+    assert_match "BearBrowser build environment check", shell_output("#{bin}/bearbrowser-check-build-env")
+    assert_match "hidden_refs=", shell_output("#{bin}/bearbrowser-verify-upstream")
+    assert_match "BearBrowser doctor", shell_output("#{bin}/bearbrowser-doctor")
+    assert_match "BearBrowser credential doctor", shell_output("#{bin}/bearbrowser-credential-doctor")
+    assert_match "BearBrowser credential broker policy verified", shell_output("#{bin}/bearbrowser-verify-credentials")
+    assert_match "BearBrowser Linux packaging verified", shell_output("#{bin}/bearbrowser-verify-linux-packaging")
+    assert_match "browser.playwright", shell_output("#{bin}/bearbrowser-automation-surfaces")
     assert_match "BearBrowser provenance", shell_output("#{bin}/bearbrowser-emit-event --event-type runtime.health --payload '{\"status\":\"test\"}'")
     assert_match "BearBrowser policy action", shell_output("#{bin}/bearbrowser-propose-action --action-type summarize_page --target-kind page --target-label test")
     assert_match "BearBrowser page summary", shell_output("#{bin}/bearbrowser-page-summary create --text 'test page summary' --source-label test")
     assert_match "BearBrowser page summary log verified", shell_output("#{bin}/bearbrowser-verify-summaries")
     assert_match "BearBrowser agent sidecar contract verified", shell_output("#{bin}/bearbrowser-verify-agent-sidecar")
     assert_match "BearBrowser sidecar status verified", shell_output("#{bin}/bearbrowser-verify-sidecar-status")
+    assert_match "BearBrowser SourceOS control-plane manifests verified", shell_output("#{bin}/bearbrowser-verify-control-plane")
     assert_match "http://127.0.0.1:", shell_output("#{bin}/bearbrowser-sidecar-server --print-url")
+    # cockpit CLIs install + fail cleanly before assembly (no node/bun needed to prove the wiring).
+    assert_match "run assemble-cockpit.sh", shell_output("#{bin}/bearbrowser-cockpit-up 2>&1", 1)
+    assert_match "bearhistory-policy-explain", shell_output("#{bin}/bearbrowser-history policy explain --profile agent-runtime --dry-run")
+    assert_match "bearhistory-export-explain", shell_output("#{bin}/bearbrowser-history export explain --session demo --profile agent-runtime --dry-run")
   end
 end
