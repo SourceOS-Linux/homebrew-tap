@@ -35,11 +35,11 @@
           "Formula/bearbrowser.rb",
           "Casks/bearbrowser.rb"
         ],
-        "checksumRecord": "sha256:no_check (scaffold) with release checksum tracked in this record and source release assets",
-        "releaseNote": "https://github.com/SourceOS-Linux/BearBrowser/releases",
+        "checksumRecord": "sha256:9eb0875d6edb04a96dd103d38e2937ebedfde320c56afb9293c186c16bf46ed8 for BearBrowser-150.0.1-macos.dmg; full SHA256SUMS.txt attached to the v150.0.1 release",
+        "releaseNote": "https://github.com/SourceOS-Linux/BearBrowser/releases/tag/v150.0.1",
         "rollbackNote": "If provenance/checksum/test evidence fails, keep existing formula version and revert cask/formula bump in homebrew-tap before republish.",
         "buildTestEvidenceLink": "https://github.com/SourceOS-Linux/BearBrowser/actions",
-        "sourceCommitReference": "https://github.com/SourceOS-Linux/BearBrowser/commits/main",
+        "sourceCommitReference": "https://github.com/SourceOS-Linux/BearBrowser/commit/8ffb75f",
         "artifactProvenanceRecord": "https://github.com/SourceOS-Linux/BearBrowser"
       }
     },
