@@ -1,6 +1,6 @@
 cask "bearbrowser" do
-  version "150.0.3"
-  sha256 "db8c8ae68e651c063ba7576bc1db4ea9e0dafcdb0d77f16694b1724e6e806fad"
+  version "150.0.4"
+  sha256 "d44e98b5d7d89313935bef7659f1a084ed5c40106e674108b3ede58c8139fe74"
 
   url "https://github.com/SourceOS-Linux/BearBrowser/releases/download/v#{version}/BearBrowser-#{version}-macos.dmg",
       verified: "github.com/SourceOS-Linux/BearBrowser/"
